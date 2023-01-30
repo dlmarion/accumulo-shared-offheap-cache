@@ -9,7 +9,7 @@ password using the `requirepass` Redis configuration property.
 # Building
 ```
 mvn clean package dependency:copy-dependencies
-``
+```
 
 # Installation
 
