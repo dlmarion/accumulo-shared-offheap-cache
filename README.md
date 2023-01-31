@@ -20,17 +20,21 @@ After building, copy the jar files from the `target` and `target/dependency` dir
 Once the jar files are in the correct location, the following values will need to be put into the `accumulo.properties` file.
 
 ```
+#
+# This configuration creates an on-heap cache of 1MB and then uses
+# Redis for the off-heap cache.
+#
 tserver.cache.manager.class=accumulo.ohc.RedisBackedBlockCacheManager
-tserver.cache.config.redis.default.logInterval=30
-tserver.cache.config.redis.data.on-heap.maximumWeight=104857600
+tserver.cache.config.redis.default.logInterval=180
+tserver.cache.config.redis.data.on-heap.maximumWeight=1048576
 tserver.cache.config.redis.data.off-heap.hostname=127.0.0.1
 tserver.cache.config.redis.data.off-heap.port=6379
 tserver.cache.config.redis.data.off-heap.password=<password>
-tserver.cache.config.redis.index.on-heap.maximumWeight=104857600
+tserver.cache.config.redis.index.on-heap.maximumWeight=1048576
 tserver.cache.config.redis.index.off-heap.hostname=127.0.0.1
 tserver.cache.config.redis.index.off-heap.port=6379
 tserver.cache.config.redis.index.off-heap.password=<password>
-tserver.cache.config.redis.summary.on-heap.maximumWeight=104857600
+tserver.cache.config.redis.summary.on-heap.maximumWeight=1048576
 tserver.cache.config.redis.summary.off-heap.hostname=127.0.0.1
 tserver.cache.config.redis.summary.off-heap.port=6379
 tserver.cache.config.redis.summary.off-heap.password=<password>

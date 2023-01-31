@@ -85,7 +85,9 @@ public class RedisBackedBlockCache implements BlockCache {
           @NonNull RemovalCause cause) {
         // this is called before the entry is actually removed from the cache
         if (cause.wasEvicted()) {
-          LOG.trace("Block {} evicted from on-heap cache, putting to off-heap cache", key);
+          // TODO: I'm seeing that newly loaded blocks (from load() line 198) are being immediately evicted.
+          // Found https://github.com/ben-manes/caffeine/issues/616 which may be related.
+          LOG.info("Evicting block {} from on-heap cache, putting to off-heap cache", key);
           set(key, block.getBuffer());
         }
       }
@@ -96,7 +98,9 @@ public class RedisBackedBlockCache implements BlockCache {
         if (buffer == null) {
           return null;
         }
-        LOG.trace("Promoting block {} to on-heap cache", key);
+        // TODO: I'm never seeing this message. It appears that off-heap blocks
+        // are loaded back in via load() line 196, called from getBlock(String,Loader)
+        LOG.info("Promoting block {} from off-heap cache to on-heap cache", key);
         return new Block(buffer);
       }
     });
@@ -187,7 +191,11 @@ public class RedisBackedBlockCache implements BlockCache {
       data = loader.load((int) Math.min(Integer.MAX_VALUE, this.onHeapSize), resolvedDeps);
       if (data == null) {
         return null;
+      } else {
+        LOG.info("Loaded block {} from Loader", key);
       }
+    } else {
+      LOG.info("Loaded block {} from off-heap cache", key);
     }
     return new Block(data);
   }
